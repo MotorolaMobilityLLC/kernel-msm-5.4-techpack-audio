@@ -537,19 +537,9 @@ static int aw_monitor_update_vmax_to_dsp(struct device *dev,
 {
 	int ret = -1;
 	uint32_t enable = 0;
-	int i = 0;
 
 	if (monitor->pre_vmax != vmax_set) {
-		for (i = 0;i < AW_VMAX_RETRY;i++) {
-			ret = aw87xxx_dsp_get_rx_module_enable(&enable);
-			if (!enable || ret < 0) {
-				usleep_range(AW_10000_US, AW_10000_US + 10);
-				continue;
-			} else {
-				AW_DEV_LOGI(dev, "get rx enable:%d", enable);
-				break;
-			}
-		}
+		ret = aw87xxx_dsp_get_rx_module_enable(&enable);
 		if (!enable || ret < 0) {
 			AW_DEV_LOGE(dev, "get rx failed or rx disable, ret=%d, enable=%d",
 				ret, enable);
@@ -683,7 +673,7 @@ void aw87xxx_monitor_start(struct aw_monitor *monitor)
 		monitor->vbat_sum = 0;
 
 		schedule_delayed_work(&monitor->with_dsp_work,
-				msecs_to_jiffies(AW_START_DELAY));
+				msecs_to_jiffies(monitor->monitor_hdr.monitor_time));
 	}
 }
 /***************************************************************************
@@ -1161,13 +1151,13 @@ static void aw_monitor_dtsi_parse(struct device *dev,
 
 	ret = of_property_read_string(dev_node, "esd-enable", &esd_enable);
 	if (ret < 0) {
-		AW_DEV_LOGI(dev, "esd_enable parse failed, user default[disable]");
-		monitor->esd_enable = AW_ESD_DISABLE;
+		AW_DEV_LOGI(dev, "esd_enable parse failed, user default[enable]");
+		monitor->esd_enable = AW_ESD_ENABLE;
 	} else {
-		if (!strcmp(esd_enable, "true"))
-			monitor->esd_enable = AW_ESD_ENABLE;
-		else
+		if (!strcmp(esd_enable, "false"))
 			monitor->esd_enable = AW_ESD_DISABLE;
+		else
+			monitor->esd_enable = AW_ESD_ENABLE;
 
 		AW_DEV_LOGI(dev, "parse esd-enable=[%s]",
 				monitor->esd_enable ? "true" : "false");

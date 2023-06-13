@@ -11,8 +11,7 @@
 #define AW_WAIT_TIME				(3000)
 #define REG_STATUS_CHECK_MAX			(10)
 #define AW_ESD_CHECK_DELAY			(1)
-#define AW_START_DELAY				(150)
-#define AW_VMAX_RETRY				(20)
+
 
 #define AW_MONITOR_TIME_MIN			(0)
 #define AW_MONITOR_TIME_MAX			(50000)
@@ -21,16 +20,6 @@
 #define AW_ESD_ENABLE				(true)
 #define AW_ESD_DISABLE				(false)
 #define AW_ESD_ENABLE_STRLEN			(16)
-
-enum {
-	AW_5000_US = 5000,
-	AW_10000_US = 10000,
-	AW_50000_US = 50000,
-	AW_100000_US = 100000,
-	AW_150000_US = 150000,
-};
-
-
 
 enum aw_monitor_init {
 	AW_MONITOR_CFG_WAIT = 0,
